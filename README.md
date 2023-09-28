@@ -22,3 +22,6 @@ A Discord bot made to help keep track of Manga from across several sources. Main
 
 # Additional Information
 If anyone is going to pull and run this bot for their own server make sure to add in a BotConstants.py file. Thats where the token and prefix information will be held. This might change later on.
+
+# Special Thanks 
+Special thanks to vaughnw128. If it wasnt for him development would've taken alot longer.
