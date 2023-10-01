@@ -11,8 +11,8 @@ A Discord bot made to help keep track of Manga from across several sources. Main
 - [x] Find random Manga
 - [ ] Ping users when manga's they read are updated
 - [ ] Return magna statistics
-- [x] Swap from prefix calls to / commands
-- [x] Add logger
+- [ ] Swap from prefix calls to / commands
+- [ ] Add logger
 - [ ] Add more documentation
 - [ ] Polish README.md
 - [ ] Write tests(bleh)
