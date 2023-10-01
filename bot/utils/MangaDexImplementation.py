@@ -48,7 +48,6 @@ class mdAPI:
         picture = requests.get(self.getCoverLink(mangaJson))
 
         fileName = f"{self.__getTitle(mangaJson).strip()}.jpg"
-        print(fileName)
         with open(fileName, 'wb') as p:
             p.write(picture.content)
 
@@ -64,8 +63,6 @@ class mdAPI:
         """
         embed = discord.Embed(title=self.__getTitle(mangaJson), url=self.__getMangaLink(mangaJson),
                               description=self.__getDescription(mangaJson))
-
-        print(self.__getAuthorName(mangaJson))
 
         embed.add_field(name="By", value=f'[{self.__getAuthorName(mangaJson)}]'
                                          f'(https://mangadex.org/author/{self.__getAuthorId(mangaJson)}/'
@@ -124,6 +121,8 @@ class mdAPI:
         :return:
         """
         try:
+            # Im keeping this line around for potential future use
+            # return list(dict(mangaJson["data"]["attributes"]["description"]).values())[0]
             return mangaJson["data"]["attributes"]["description"]["en"]
         except KeyError as error:
             if 0 == len(mangaJson["data"]["attributes"]["description"]):
@@ -149,8 +148,6 @@ class mdAPI:
         :param mangaJson: Json file containing manga information
         :return: str
         """
-        print(mangaJson)
-        print(mangaJson["data"]["relationships"][2]["attributes"])
         return mangaJson["data"]["relationships"][2]["attributes"]["fileName"]
 
     @staticmethod
@@ -161,5 +158,6 @@ class mdAPI:
         :param mangaJson: Json file containing manga information
         :return:
         """
-        # print(mangaJson["data"]["attributes"]["title"]["en"])
-        return mangaJson["data"]["attributes"]["title"]["en"]
+
+        # I hate this line and I hate that I wrote it, its so bad but atleast it gets the job done
+        return list(dict(mangaJson["data"]["attributes"]["title"]).values())[0]
