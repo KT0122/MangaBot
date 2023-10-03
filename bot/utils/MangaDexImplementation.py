@@ -16,13 +16,17 @@ class mdAPI:
         return requests.get(
             f"{self.base_url}/manga/{randomId}?includes[]=author&includes[]=artist&includes[]=cover_art").json()
 
-    def getMangaJson(self, title) -> json:
+    def getMangaJson(self, title: str) -> json:
         """
         Takes in a title and returns a str containing manga Id and a Json containting manga information
 
         :param title: The title of the desired manga
         :returns: jsopn
         """
+
+        if "Pokemon" or "Pokémon" in title:
+            return None
+
         title = title.lower()
         r = requests.get(
             f"{self.base_url}/manga",
@@ -31,9 +35,12 @@ class mdAPI:
 
         retrievedMangaId = ""
         for manga in r.json()["data"]:
-
+            print(manga)
             if title == str(manga["attributes"]["title"]["en"]).lower():
                 retrievedMangaId = manga["id"]
+
+        if retrievedMangaId == "":
+            return None
 
         return requests.get(
             f"{self.base_url}/manga/{retrievedMangaId}?includes[]=author&includes[]=artist&includes[]=cover_art").json()
@@ -47,7 +54,7 @@ class mdAPI:
         print("Creating cover, link is ", self.__getMangaLink(mangaJson))
         picture = requests.get(self.getCoverLink(mangaJson))
 
-        fileName = f"{self.__getTitle(mangaJson).strip()}.jpg"
+        fileName = f"{self.__getTitle(mangaJson).strip()}.png"
         with open(fileName, 'wb') as p:
             p.write(picture.content)
 
@@ -91,8 +98,8 @@ class mdAPI:
             return (f"https://uploads.mangadex.org/covers/"
                     f"{self.__getMangaId(mangaJson)}/{self.__getFileName(mangaJson)}")
         except KeyError:
-            return ("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/640px"
-                    "-Image_not_available.png")
+            return ("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/"
+                    "Image_not_available.png/640px-Image_not_available.png")
 
     def __getMangaLink(self, mangaJson) -> str:
         """

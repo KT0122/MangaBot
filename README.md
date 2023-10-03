@@ -25,3 +25,5 @@ If anyone is going to pull and run this bot for their own server make sure to ad
 
 # Special Thanks 
 Special thanks to vaughnw128. If it wasnt for him development would've taken alot longer.
+
+Credit to the team at MangaDex for this API and all of their hardwork to keep the site up and running.
