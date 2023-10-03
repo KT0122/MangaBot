@@ -1,9 +1,10 @@
 FROM python:3.10
-WORKDIR /bot
 LABEL authors="KT0122"
+
+WORKDIR /bot
+COPY /bot /bot
+COPY requirements.txt /bot
 
 RUN pip install -r requirements.txt
 
-ENTRYPOINT ["top", "-b"]
-
-CMD["run", "python", "-m", "bot"]
+CMD ["python", "main.py"]
