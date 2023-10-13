@@ -20,6 +20,8 @@ class MangaBot(commands.Bot):
         logging.info("Command tree synced")
 
     async def setup_hook(self) -> None:
-        cog = "exts.manga"
-        await self.load_extension(cog)
+        mangaCog = "exts.manga"
+        reactionCog = "exts.ImageReaction"
+        await self.load_extension(mangaCog)
+        await self.load_extension(reactionCog)
         await self.sync_app_commands()

@@ -40,9 +40,9 @@ class mangaCommands(commands.Cog):
             path = self.md.getMangaCover(mangaJson=mangaJson)
             embed = self.md.createDiscordEmbed(mangaJson=mangaJson)
 
-            # There's a strange bug on library end where the image isnt being set with the actual url retrieved from the
-            # MangaDex API for now iamages are created and sent alongside the embed before having their files closed and
-            # deleted by the OS
+            # There's a strange bug on library end where the image isn't being set with the actual url retrieved from
+            # the MangaDex API for now iamages are created and sent alongside the embed before having their files
+            # closed and deleted by the OS
             file = discord.File(path, filename="cover.jpg")
             embed.set_image(url="attachment://cover.jpg")
 
@@ -72,7 +72,7 @@ class mangaCommands(commands.Cog):
 
         # Preemptive measures to avoid unkown interaction errors
         await interaction.response.defer()  # noqa
-        await asyncio.sleep(3)
+        await asyncio.sleep(2)
         await interaction.followup.send(embed=embed, file=file)
 
         file.close()

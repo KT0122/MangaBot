@@ -24,7 +24,7 @@ class mdAPI:
         :returns: jsopn
         """
 
-        if "Pokemon" or "Pokémon" in title:
+        if "Pokemon" in title or "Pokémon" in title:
             return None
 
         title = title.lower()
@@ -35,7 +35,6 @@ class mdAPI:
 
         retrievedMangaId = ""
         for manga in r.json()["data"]:
-            print(manga)
             if title == str(manga["attributes"]["title"]["en"]).lower():
                 retrievedMangaId = manga["id"]
 
@@ -51,10 +50,17 @@ class mdAPI:
 
         :param mangaJson: Json file containing manga information
         """
+        # This is still here for testing and bug finding purposes, I gotta get it put in the logger at some point
         print("Creating cover, link is ", self.__getMangaLink(mangaJson))
         picture = requests.get(self.getCoverLink(mangaJson))
 
-        fileName = f"{self.__getTitle(mangaJson).strip()}.png"
+        title = self.__getTitle(mangaJson)
+        for ch in ['\\', '/', '?', '%', '*', ':', '|', '\"', '<', '>', '.', ',', ';', '=']:
+            if ch in title:
+                title = title.replace(ch, '')
+
+        fileName = f"{title}.png"
+
         with open(fileName, 'wb') as p:
             p.write(picture.content)
 
