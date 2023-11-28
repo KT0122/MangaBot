@@ -1,2 +1,12 @@
 /bot/BotConstants.py
 /discord.log
+bot/API Local Tester.py
+bot/TestBot.py
+bot/__pycache__/Bot.cpython-310.pyc
+bot/__pycache__/BotConstants.cpython-310.pyc
+bot/exts/ImageReaction.py
+bot/exts/manga.py
+bot/exts/__pycache__/ImageReaction.cpython-310.pyc
+bot/exts/__pycache__/manga.cpython-310.pyc
+bot/utils/MangaDexImplementation.py
+bot/utils/__pycache__/MangaDexImplementation.cpython-310.pyc
