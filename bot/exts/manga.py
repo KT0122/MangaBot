@@ -5,6 +5,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from bot.utils.pagination import Pagination
 from bot.utils.MangaDexImplementation import mdAPI
 
 
@@ -37,20 +38,14 @@ class mangaCommands(commands.Cog):
                                                     "3. Its MDex's fault\n"
                                                     "4. You searched for Pokemon\n")
         else:
-            path = self.md.getMangaCover(mangaJson=mangaJson)
-            embed = self.md.createDiscordEmbed(mangaJson=mangaJson)
+            embeds = self.md.createDiscordEmbed(mangaJson=mangaJson)
 
-            # There's a strange bug on library end where the image isn't being set with the actual url retrieved from
-            # the MangaDex API for now iamages are created and sent alongside the embed before having their files
-            # closed and deleted by the OS
-            file = discord.File(path, filename="cover.jpg")
-            embed.set_image(url="attachment://cover.jpg")
+            async def getPage(page: int):
+                embed = embeds[page]
 
-            # Pycharm marks this as an unresolved reference but it both shows up in the Library documentation and
-            # works so
-            await interaction.response.send_message(embed=embed, file=file)  # noqa
-            file.close()
-            os.remove(path)
+                return embed, len(embeds)
+
+            await Pagination(interaction=interaction, getPage=getPage).navigate()
 
     # At some point itll probably be a good idea to make a helper method to handle most of whats going on here
     # I'll come back to it later
@@ -62,20 +57,29 @@ class mangaCommands(commands.Cog):
         @param interaction:  Necessary for slash commands to function properly
         """
         mangaJson = self.md.getRandomManga()
-
-        path = self.md.getMangaCover(mangaJson=mangaJson)
-        embed = self.md.createDiscordEmbed(mangaJson=mangaJson)
-
-        # deleted by the OS
-        file = discord.File(path, filename="cover.jpg")
-        embed.set_image(url="attachment://cover.jpg")
+        embeds = self.md.createDiscordEmbed(mangaJson=mangaJson)
 
         # Preemptive measures to avoid unkown interaction errors
         await interaction.response.defer()  # noqa
         await asyncio.sleep(2)
-        await interaction.followup.send(embed=embed, file=file)
 
-        file.close()
+        async def getPage(page: int):
+            embed = embeds[page]
+
+            return embed, len(embeds)
+
+        await Pagination(interaction=interaction, getPage=getPage).navigate()
+
+
+#        await interaction.followup.send(embed=embeds[0], file=file)
+
+
+    @app_commands.command(name="mangastats", description="Retrieve the statistics of a chosen manga")
+    async def MangaStats(self, interation: discord.Interaction) -> None:
+
+
+        await interation.response.defer()
+
 
     # if this is still here in 2024 someone bother me to fix it
     @app_commands.command(name="pokemon", description="If you're wondering why you cant search Pokemon Manga")

@@ -6,3 +6,5 @@ bot/exts/ImageReaction.py
 bot/exts/manga.py
 bot/utils/SpotifyImplementation.py
 bot/exts/spotify.py
+.env
+.vscode/launch.json

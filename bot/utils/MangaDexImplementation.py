@@ -21,7 +21,7 @@ class mdAPI:
         Takes in a title and returns a str containing manga Id and a Json containting manga information
 
         :param title: The title of the desired manga
-        :returns: jsopn
+        :returns: json
         """
 
         if "Pokemon" in title or "Pokémon" in title:
@@ -44,28 +44,6 @@ class mdAPI:
         return requests.get(
             f"{self.base_url}/manga/{retrievedMangaId}?includes[]=author&includes[]=artist&includes[]=cover_art").json()
 
-    def getMangaCover(self, mangaJson) -> str:
-        """
-        Retrieves the cover of the manga and writes it to cover.jpg
-
-        :param mangaJson: Json file containing manga information
-        """
-        # This is still here for testing and bug finding purposes, I gotta get it put in the logger at some point
-        print("Creating cover, link is ", self.__getMangaLink(mangaJson))
-        picture = requests.get(self.getCoverLink(mangaJson))
-
-        title = self.__getTitle(mangaJson)
-        for ch in ['\\', '/', '?', '%', '*', ':', '|', '\"', '<', '>', '.', ',', ';', '=']:
-            if ch in title:
-                title = title.replace(ch, '')
-
-        fileName = f"{title}.png"
-
-        with open(fileName, 'wb') as p:
-            p.write(picture.content)
-
-        return fileName
-
     def createDiscordEmbed(self, mangaJson) -> discord.Embed:
         """
         Takes in the json file of a manga and returns an Embed for the bot. This method is only meant to be used by the
@@ -74,14 +52,36 @@ class mdAPI:
         :param mangaJson: Json file containing manga information
         :return:
         """
-        embed = discord.Embed(title=self.__getTitle(mangaJson), url=self.__getMangaLink(mangaJson),
+        frontEmbed = discord.Embed(title=self.__getTitle(mangaJson), url=self.__getMangaLink(mangaJson),
                               description=self.__getDescription(mangaJson))
 
-        embed.add_field(name="By", value=f'[{self.__getAuthorName(mangaJson)}]'
+        frontEmbed.add_field(name="By", value=f'[{self.__getAuthorName(mangaJson)}]'
                                          f'(https://mangadex.org/author/{self.__getAuthorId(mangaJson)}/'
                                          f' "Takes you to the author\'s MangaDex Page")')
+        
+        frontEmbed.set_image(url=self.__getCoverLink(mangaJson=mangaJson))
+        
+        comments, rating, follows, *others = self.__getStatistics(self.__getMangaId(mangaJson=mangaJson))
+        
+        print("Rating is here:")
+        print(rating)
 
-        return embed
+        statisticsEmbed = discord.Embed(title=self.__getTitle(mangaJson), description=(
+            f"Mean Rating: {rating['average']}\n"
+            + f"Bayesian Rating: {rating['bayesian']}\n"
+            + f"Follows: {follows}"
+        ))
+
+        embeds = [frontEmbed, statisticsEmbed]
+
+        return embeds
+
+    def __getStatistics(self, manga_id) -> dict:
+
+        r = requests.get(f"{self.base_url}/statistics/manga/{manga_id}")
+        print(r.json()["statistics"][manga_id].values())
+
+        return r.json()["statistics"][manga_id].values()
 
     def __getAuthorName(self, mangaJason):
         """
@@ -92,8 +92,8 @@ class mdAPI:
         """
         return (requests.get(f"{self.base_url}/author/"
                              f"{self.__getAuthorId(mangaJason)}").json()["data"]["attributes"]["name"])
-
-    def getCoverLink(self, mangaJson):
+    
+    def __getCoverLink(self, mangaJson) -> str:
         """
         Takes in the json file of a manga and returns the link to the manga cover
 
@@ -101,7 +101,7 @@ class mdAPI:
         :return:
         """
         try:
-            return (f"https://uploads.mangadex.org/covers/"
+            return (f"https://uploads.fxmangadex.org/covers/"
                     f"{self.__getMangaId(mangaJson)}/{self.__getFileName(mangaJson)}")
         except KeyError:
             return ("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/"
@@ -174,3 +174,4 @@ class mdAPI:
 
         # I hate this line and I hate that I wrote it, its so bad but atleast it gets the job done
         return list(dict(mangaJson["data"]["attributes"]["title"]).values())[0]
+    
