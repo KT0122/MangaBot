@@ -22,12 +22,13 @@ class mangaCommands(commands.Cog):
     @app_commands.command(name="searchmdex", description="Search for Manga from MangaDex right from your discord")
     @app_commands.describe(title="Title of the mangga")
     async def SearchMDex(self, interaction: discord.Interaction, title: str) -> None:
-        """
+        """ 
         Search MangaDex for a user specified manga and return to them an embedd containing a link and other info
         about the manga
 
-        :param interaction: Necessary for slash commands to function properly
-        :param title: Title of the manga to be searched for, passed in by user
+        Args:
+            interaction (discord.Interaction): Necessary for slash commands to function properly
+            title (str): _description_
         """
         mangaJson = self.md.getMangaJson(title)
 
@@ -53,9 +54,11 @@ class mangaCommands(commands.Cog):
     async def RandomManga(self, interaction: discord.Interaction) -> None:
         """
         Search for a random manga from MangaDex and return it to the user
-
-        @param interaction:  Necessary for slash commands to function properly
+        
+        Args:
+            interaction (discord.Interaction): Necessary for slash commands to function properly
         """
+        
         mangaJson = self.md.getRandomManga()
         embeds = self.md.createDiscordEmbed(mangaJson=mangaJson)
 
@@ -70,16 +73,10 @@ class mangaCommands(commands.Cog):
 
         await Pagination(interaction=interaction, getPage=getPage).navigate()
 
-
-#        await interaction.followup.send(embed=embeds[0], file=file)
-
-
     @app_commands.command(name="mangastats", description="Retrieve the statistics of a chosen manga")
     async def MangaStats(self, interation: discord.Interaction) -> None:
 
-
         await interation.response.defer()
-
 
     # if this is still here in 2024 someone bother me to fix it
     @app_commands.command(name="pokemon", description="If you're wondering why you cant search Pokemon Manga")
@@ -88,8 +85,10 @@ class mangaCommands(commands.Cog):
         Just an explanation as to why Pokemon searches are currently being filtered out, idk why Im writing this
         docstring tbh
 
-        @param interaction:  Necessary for slash commands to function properly
+        Args:
+            interaction (discord.Interaction): Necessary for slash commands to function properly
         """
+        
         await interaction.response.send_message("If you're here you're probably wondering \"Why cant we lookup "  # noqa
                                                 "Pokemon?\"\nPokemon searches on MDex's API seem to be somewhat "
                                                 "broken. Using the API to search up Pokemon will bring up various "
@@ -98,3 +97,4 @@ class mangaCommands(commands.Cog):
                                                 "spinoffs. Because of this all Pokemon searches are disabled until a "
                                                 "proper fix can be implemented. If this still isnt fixxed in 2024 find"
                                                 " someone who knows and will bother my creator about it.")
+        

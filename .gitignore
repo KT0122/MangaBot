@@ -8,3 +8,7 @@ bot/utils/SpotifyImplementation.py
 bot/exts/spotify.py
 .env
 .vscode/launch.json
+ExampleMangaJson
+ExampleStatisticsJson
+ExampleTagsJson
+bot/utils/CheckSites.py

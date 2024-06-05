@@ -37,7 +37,7 @@ class Pagination(discord.ui.View):
      
     async def editPages(self, interaction: discord.Interaction) -> None:
         embed, self.totalPages = await self.getPage(self.index)
-        self.updateButtons()
+        await self.updateButtons()
 
         await interaction.response.edit_message(embed=embed, view=self)
 
